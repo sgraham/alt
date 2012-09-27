@@ -5,7 +5,8 @@ a.vim is nice, but somewhat maddening when your path has too much in it. It
 also doesn't handle non '.' extensions like Chromium uses.
 
 This one does something crappier that works with Chromium's standard naming
-conventions, and doesn't search 'path' (for better or worse).
+conventions, and doesn't search 'path' (for better or worse). It's also
+written in Python because vimscript makes me cry.
 
 To use it:
 
