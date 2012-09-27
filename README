@@ -1,0 +1,26 @@
+Alternate file cycler for Vim
+-----------------------------
+
+a.vim is nice, but somewhat maddening when your path has too much in it. It
+also doesn't handle non '.' extensions like Chromium uses.
+
+This one does something crappier that works with Chromium's standard naming
+conventions, and doesn't search 'path' (for better or worse).
+
+To use it:
+
+    cd %USERPROFILE%\vimfiles
+    git clone https://github.com/sgraham/alt.git bundle\alt
+
+or:
+
+    cd ~/.vim
+    git clone https://github.com/sgraham/alt.git bundle/alt
+
+And add:
+
+    set runtimepath^=~/vimfiles/alt
+
+to your _vimrc.
+
+Then, push Tab in command mode to cycle.
