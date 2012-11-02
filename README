@@ -24,4 +24,5 @@ And add:
 
 to your _vimrc.
 
-Then, push Tab in command mode to cycle.
+Then, push Ctrl-Tab to cycle all related files, or Tab to cycle files for the
+platform that you're on.
