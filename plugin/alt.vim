@@ -13,7 +13,7 @@ endif
 python << endpython
 import os
 
-def get_alternate_file(filename, file_exists=os.path.exists):
+def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
   """Return the next alternate name for a file.
 
   'next' in this context means that repeated calls are stable so that if
@@ -22,25 +22,27 @@ def get_alternate_file(filename, file_exists=os.path.exists):
   >>> files = ['wee.cc', 'wee.h',]
   >>> file_exists = lambda x: x in files
   
-  >>> get_alternate_file('wee.h', file_exists)
+  >>> get_alternate_file('wee.h', file_exists=file_exists)
   'wee.cc'
-  >>> get_alternate_file('wee.cc', file_exists)
+  >>> get_alternate_file('wee.cc', file_exists=file_exists)
   'wee.h'
 
   >>> files = ['wee.h', 'wee_win.cc', 'wee_aura.cc', 'wee_mac.cc']
-  >>> get_alternate_file('wee.h', file_exists)
+  >>> get_alternate_file('wee.h', file_exists=file_exists)
   'wee_aura.cc'
-  >>> get_alternate_file('wee_aura.cc', file_exists)
+  >>> get_alternate_file('wee_aura.cc', file_exists=file_exists)
   'wee_mac.cc'
-  >>> get_alternate_file('wee_mac.cc', file_exists)
+  >>> get_alternate_file('wee_mac.cc', file_exists=file_exists)
   'wee_win.cc'
-  >>> get_alternate_file('wee_win.cc', file_exists)
+  >>> get_alternate_file('wee_win.cc', file_exists=file_exists)
   'wee.h'
   """
 
   root, ext = os.path.splitext(filename)
   underscore_exts = [
     'aura',
+    'aurawin',
+    'aurax11',
     'gtk',
     'linux',
     'mac',
@@ -49,7 +51,14 @@ def get_alternate_file(filename, file_exists=os.path.exists):
     'unittest',
   ]
 
+  if this_os:
+    if sys.platform == 'win32':
+      underscore_exts = [ 'aura', 'aurawin', 'win' ]
+    else:
+      raise ValueError('TODO: non-win32')
+
   extension_cycle = [ '.h', '.cc', '.cpp' ]
+  extension_cycle += ['_' + x + '.h' for x in underscore_exts]
   extension_cycle += ['_' + x + '.cc' for x in underscore_exts]
 
   orig_root = root
@@ -72,13 +81,26 @@ def get_alternate_file(filename, file_exists=os.path.exists):
       return candidate
 endpython
 
-function! AltFile()
+function! AltFileAll()
 python << endpython
 import vim
 name = vim.current.buffer.name
-alt = get_alternate_file(name)
+alt = get_alternate_file(name, False)
 vim.command('edit ' + alt)
 endpython
 endfunction
 
-map <silent> <tab> :call AltFile()<cr>
+function! AltFileThisOs()
+python << endpython
+import vim
+name = vim.current.buffer.name
+alt = get_alternate_file(name, True)
+vim.command('edit ' + alt)
+endpython
+endfunction
+
+if !exists('g:alt_no_maps')
+  " TODO: <tab> for same-os, <c-tab> for all os's.
+  map <silent> <c-tab> :call AltFileAll()<cr>
+  map <silent> <tab> :call AltFileThisOs()<cr>
+endif
