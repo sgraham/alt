@@ -49,6 +49,7 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
     'posix',
     'win',
     'unittest',
+    'test',
   ]
 
   if this_os:
@@ -57,9 +58,10 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
     else:
       raise ValueError('TODO: non-win32')
 
-  extension_cycle = [ '.h', '.cc', '.cpp' ]
+  extension_cycle = [ '.h', '.cc', '.cpp', '.c' ]
   extension_cycle += ['_' + x + '.h' for x in underscore_exts]
   extension_cycle += ['_' + x + '.cc' for x in underscore_exts]
+  extension_cycle += ['_' + x + '.c' for x in underscore_exts]
 
   orig_root = root
   for variant in underscore_exts:
@@ -100,7 +102,6 @@ endpython
 endfunction
 
 if !exists('g:alt_no_maps')
-  " TODO: <tab> for same-os, <c-tab> for all os's.
-  map <silent> <c-tab> :call AltFileAll()<cr>
-  map <silent> <tab> :call AltFileThisOs()<cr>
+  map <silent> <c-`> :call AltFileAll()<cr>
+  map <silent> ` :call AltFileThisOs()<cr>
 endif
