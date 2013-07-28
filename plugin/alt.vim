@@ -102,6 +102,6 @@ endpython
 endfunction
 
 if !exists('g:alt_no_maps')
-  map <silent> <c-`> :call AltFileAll()<cr>
+  map <silent> - :call AltFileAll()<cr>
   map <silent> ` :call AltFileThisOs()<cr>
 endif
