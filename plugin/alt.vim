@@ -53,10 +53,10 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
   ]
 
   if this_os:
-    if sys.platform == 'win32':
+    if sys.platform.startswith('win32'):
       underscore_exts = [ 'aura', 'aurawin', 'win' ]
     else:
-      raise ValueError('TODO: non-win32')
+      raise ValueError('TODO: platform')
 
   extension_cycle = [ '.h', '.cc', '.cpp', '.c' ]
   extension_cycle += ['_' + x + '.h' for x in underscore_exts]
