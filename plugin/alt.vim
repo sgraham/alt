@@ -55,6 +55,8 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
   if this_os:
     if sys.platform.startswith('win32'):
       underscore_exts = [ 'aura', 'aurawin', 'win' ]
+    elif sys.platform.startswith('linux'):
+      underscore_exts = [ 'aura', 'auralinux', 'posix', 'linux' ]
     else:
       raise ValueError('TODO: platform')
 
