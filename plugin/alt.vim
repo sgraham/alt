@@ -57,13 +57,17 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
       underscore_exts = [ 'aura', 'aurawin', 'win', 'win32' ]
     elif sys.platform.startswith('linux'):
       underscore_exts = [ 'aura', 'auralinux', 'posix', 'linux' ]
+    elif sys.platform.startswith('darwin'):
+      underscore_exts = [ 'mac', 'posix' ]
     else:
       raise ValueError('TODO: platform')
 
   extension_cycle = [ '.h', '.cc', '.cpp', '.c' ]
   extension_cycle += ['_' + x + '.h' for x in underscore_exts]
   extension_cycle += ['_' + x + '.cc' for x in underscore_exts]
+  extension_cycle += ['_' + x + '.mm' for x in underscore_exts]
   extension_cycle += ['_' + x + '.c' for x in underscore_exts]
+  extension_cycle += ['_' + x + '.m' for x in underscore_exts]
   extension_cycle += ['-' + x + '.h' for x in underscore_exts]
   extension_cycle += ['-' + x + '.cc' for x in underscore_exts]
   extension_cycle += ['-' + x + '.c' for x in underscore_exts]
