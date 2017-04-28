@@ -21,7 +21,7 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
 
   >>> files = ['wee.cc', 'wee.h',]
   >>> file_exists = lambda x: x in files
-  
+
   >>> get_alternate_file('wee.h', file_exists=file_exists)
   'wee.cc'
   >>> get_alternate_file('wee.cc', file_exists=file_exists)
@@ -56,7 +56,7 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
     if sys.platform.startswith('win32'):
       underscore_exts = [ 'aura', 'aurawin', 'win', 'win32' ]
     elif sys.platform.startswith('linux'):
-      underscore_exts = [ 'aura', 'auralinux', 'posix', 'linux' ]
+      underscore_exts = [ 'aura', 'auralinux', 'fuchsia', 'posix', 'linux' ]
     elif sys.platform.startswith('darwin'):
       underscore_exts = [ 'mac', 'posix' ]
     else:
