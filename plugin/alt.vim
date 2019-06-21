@@ -36,6 +36,23 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
   'wee_win.cc'
   >>> get_alternate_file('wee_win.cc', file_exists=file_exists)
   'wee.h'
+
+  >>> files = ['zircon/kernel/object/event_dispatcher.cpp', 'zircon/kernel/object/glue.cpp', 'zircon/kernel/object/include/object/event_dispatcher.h']
+  >>> get_alternate_file('zircon/kernel/object/event_dispatcher.cpp', file_exists=file_exists)
+  'zircon/kernel/object/include/object/event_dispatcher.h'
+  >>> get_alternate_file('zircon/kernel/object/include/object/event_dispatcher.h', file_exists=file_exists)
+  'zircon/kernel/object/event_dispatcher.cpp'
+  >>> get_alternate_file('zircon/kernel/object/glue.cpp', file_exists=file_exists)
+  Traceback (most recent call last):
+    ...
+  ValueError: Couldn't find any alternate for 'zircon/kernel/object/glue.cpp'
+
+
+  >>> files = ['zircon/kernel/lib/oom/include/lib/oom.h', 'zircon/kernel/lib/oom/oom.cpp']
+  >>> get_alternate_file('zircon/kernel/lib/oom/include/lib/oom.h', file_exists=file_exists)
+  'zircon/kernel/lib/oom/oom.cpp'
+  >>> get_alternate_file('zircon/kernel/lib/oom/oom.cpp', file_exists=file_exists)
+  'zircon/kernel/lib/oom/include/lib/oom.h'
   """
 
   root, ext = os.path.splitext(filename)
@@ -72,13 +89,25 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
   extension_cycle += ['-' + x + '.cc' for x in underscore_exts]
   extension_cycle += ['-' + x + '.c' for x in underscore_exts]
 
-  orig_root = root
   for variant in underscore_exts:
     if root.endswith('_' + variant):
       at = -(len(variant) + 1)
       root = root[:at]
       ext = '_' + variant + ext
       break
+
+  # This is for Zircon's files that are split between fairly complicated header
+  # and source locations.
+  style = os.path.basename(os.path.dirname(os.path.dirname(root)))
+  possible_root_locations = [root,
+          os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(root))),
+                       os.path.basename(root)),
+          os.path.join(os.path.dirname(root), 'include', style,
+                       os.path.basename(os.path.dirname(root))),
+          os.path.join(os.path.dirname(root), 'include',
+                       os.path.basename(os.path.dirname(root)),
+                       os.path.basename(root))
+          ]
 
   if ext not in extension_cycle:
     raise ValueError("Don't know how to handle '%s' for '%s'" % (ext, filename))
@@ -87,9 +116,10 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
     index = (index + 1) % len(extension_cycle)
     if extension_cycle[index] == ext:
       raise ValueError("Couldn't find any alternate for '%s'" % filename)
-    candidate = root + extension_cycle[index]
-    if file_exists(candidate):
-      return candidate
+    for possible_root in possible_root_locations:
+      candidate = possible_root + extension_cycle[index]
+      if file_exists(candidate):
+        return candidate
 endpython
 
 function! AltFileAll()
