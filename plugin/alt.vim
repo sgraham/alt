@@ -5,15 +5,15 @@
 " Scott Graham <scott.vimalt@h4ck3r.net>
 
 
-if !has('python')
-  s:ErrMsg( "Error: Required vim compiled with +python" )
+if !has('python3')
+  s:ErrMsg( "Error: Required vim compiled with +python3" )
   finish
 endif
 
-execute 'pyfile ' expand('<sfile>:p:h') . '/alt.py'
+execute 'py3file ' expand('<sfile>:p:h') . '/alt.py'
 
 function! AltFileAll()
-python << endpython
+python3 << endpython
 import vim
 name = vim.current.buffer.name
 alt = get_alternate_file(name, False)
@@ -22,7 +22,7 @@ endpython
 endfunction
 
 function! AltFileThisOs()
-python << endpython
+python3 << endpython
 import vim
 name = vim.current.buffer.name
 alt = get_alternate_file(name, True)

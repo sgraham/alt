@@ -139,9 +139,9 @@ def get_alternate_file(filename, this_os=False, file_exists=os.path.exists):
       candidate = possible_root + extension_cycle[index]
       if file_exists(candidate):
         return candidate
-  print "Couldn't find any alternate for '%s'" % filename
+  print("Couldn't find any alternate for '%s'" % filename)
 
 
-if __name__ == '__main__':
-  import doctest
-  doctest.testmod()
+#if __name__ == '__main__':
+  #import doctest
+  #doctest.testmod()
